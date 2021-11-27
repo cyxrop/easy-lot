@@ -1,0 +1,2 @@
+* * * * * cd /var/www && /usr/local/bin/php artisan schedule:run 2>&1 >> /var/www/data/cron.log
+0 */2 * * * rm /var/www/data/cron.log

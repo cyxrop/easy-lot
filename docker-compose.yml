@@ -1,0 +1,62 @@
+version: "3.8"
+
+services:
+  php:
+    build:
+      dockerfile: ./docker/php/Dockerfile
+      context: ./
+    image: easy-lot-php
+    container_name: easy-lot-php
+    restart: unless-stopped
+    working_dir: /var/www/
+    volumes:
+      - .:/var/www
+    ports:
+      - 9000:9000
+    networks:
+      - easy-lot
+
+  db:
+    container_name: easy-lot-pg
+    image: postgres:latest
+    restart: unless-stopped
+    environment:
+      - POSTGRES_PASSWORD=secret
+      - POSTGRES_USER=cyxrop
+      - POSTGRES_DB=easy_lot
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - easy-lot
+
+  redis:
+    container_name: easy-lot-redis
+    image: bitnami/redis:latest
+    command: redis-server --protected-mode no --requirepass 1q2w3e4r
+    user: root
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    volumes:
+      - ./data/redis:/bitnami/redis/data
+    ports:
+      - 6379:6379
+    networks:
+      - easy-lot
+
+  nginx:
+    container_name: easy-lot-nginx
+    image: nginx:latest
+    restart: unless-stopped
+    ports:
+      - 80:80
+    volumes:
+      - .:/var/www
+      - ./docker/nginx:/etc/nginx/conf.d
+    networks:
+      - easy-lot
+
+networks:
+  easy-lot:
+    driver: bridge
