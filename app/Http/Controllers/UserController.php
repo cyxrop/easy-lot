@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\UserRequest;
 use App\Models\User;
 use App\Resources\UserResource;
+use Auth;
+use Hash;
 use Illuminate\Http\Resources\Json\JsonResource;
-use Illuminate\Support\Facades\Hash;
 
 class UserController extends Controller
 {
@@ -16,5 +17,10 @@ class UserController extends Controller
         $data['password'] = Hash::make($data['password']);
 
         return new UserResource(User::create($data));
+    }
+
+    public function current(): JsonResource
+    {
+        return new UserResource(Auth::user());
     }
 }
