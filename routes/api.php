@@ -26,6 +26,7 @@ Route::prefix('/auth')->group(function () {
 Route::post('/users', [UserController::class, 'store']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/users/current', [UserController::class, 'current']);
     Route::apiResource('/products', ProductController::class);
     Route::apiResource('/tags', TagController::class)->only(['index', 'store', 'destroy']);
     Route::apiResource('/lots', LotController::class);
